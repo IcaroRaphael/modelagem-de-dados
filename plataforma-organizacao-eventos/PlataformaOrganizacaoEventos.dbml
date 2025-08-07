@@ -1,0 +1,95 @@
+Table Organizador [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	NomeCompleto varchar(100) [ not null ]
+	Email varchar(255) [ not null, unique ]
+	Telefone varchar(20) [ not null ]
+}
+
+Table Evento [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Titulo varchar(100) [ not null ]
+	DescricaoDetalhada varchar(500) [ not null ]
+	Inicio datetime [ not null ]
+	Termino datetime [ not null ]
+	IdStatusEvento tinyint [ not null ]
+	IdOrganizador integer [ not null ]
+	IdLocal integer [ not null ]
+}
+
+Table StatusEvento [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(20) [ not null, unique ]
+}
+
+Table Local [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Nome varchar(100) [ not null ]
+	Rua varchar(255) [ not null ]
+	Numero varchar(5) [ not null ]
+	Cidade varchar(50) [ not null ]
+	Estado varchar(50) [ not null ]
+	Cep char(8) [ not null ]
+	CapacidadeMaxima bigint [ not null ]
+}
+
+Table Categoria [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(20) [ not null ]
+}
+
+Table EventoCategoria [headercolor: #175e7a] {
+	IdEvento integer [ pk, not null ]
+	IdCategoria tinyint [ pk, not null ]
+}
+
+Table Participante [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	NomeCompleto varchar(100) [ not null ]
+	Email varchar(255) [ not null, unique ]
+	DataNascimento date [ not null ]
+}
+
+Table StatusInscricao [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(20) [ not null ]
+}
+
+Table Inscricao [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	DataHora datetime [ not null ]
+	IdStatusInscricao tinyint [ not null ]
+	IdParticipante integer [ not null ]
+	IdEvento integer [ not null ]
+}
+
+Ref fk_Status_Id_Evento {
+	StatusEvento.Id < Evento.IdStatusEvento [ delete: no action, update: no action ]
+}
+
+Ref fk_Organizador_Id_Evento {
+	Organizador.Id < Evento.IdOrganizador [ delete: no action, update: no action ]
+}
+
+Ref fk_Local_Id_Evento {
+	Local.Id < Evento.IdLocal [ delete: no action, update: no action ]
+}
+
+Ref fk_Categoria_Id_EventoCategoria {
+	Categoria.Id < EventoCategoria.IdCategoria [ delete: no action, update: no action ]
+}
+
+Ref fk_Evento_Id_EventoCategoria {
+	Evento.Id < EventoCategoria.IdEvento [ delete: no action, update: no action ]
+}
+
+Ref fk_StatusInscricao_Id_Inscricao {
+	StatusInscricao.Id < Inscricao.IdStatusInscricao [ delete: no action, update: no action ]
+}
+
+Ref fk_Participante_Id_Inscricao {
+	Participante.Id < Inscricao.IdParticipante [ delete: no action, update: no action ]
+}
+
+Ref fk_Evento_Id_Inscricao {
+	Evento.Id < Inscricao.IdEvento [ delete: no action, update: no action ]
+}
