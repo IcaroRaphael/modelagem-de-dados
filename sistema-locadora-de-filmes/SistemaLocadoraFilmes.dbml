@@ -1,0 +1,155 @@
+Table Endereco [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Cep char(8) [ not null ]
+	Logradouro varchar(255) [ not null ]
+	Bairro varchar(100) [ not null ]
+	Cidade varchar(100) [ not null ]
+	Numero varchar(10)
+	Complemento varchar(255)
+}
+
+Table Filme [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Titulo varchar(100) [ not null ]
+	AnoLancamento integer [ not null ]
+	Disponivel bit [ not null ]
+}
+
+Table Aluguel [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	DataInicio date [ not null ]
+	DataDevolucao date [ not null ]
+	IdCliente integer [ not null ]
+	IdFuncionario integer [ not null ]
+	IdPromocao integer
+	IdPagamento integer [ not null ]
+}
+
+Table Funcionario [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Nome varchar(255) [ not null ]
+	Matricula varchar(50) [ not null, unique ]
+	Cpf char(11) [ not null, unique ]
+	IdCargo tinyint [ not null ]
+}
+
+Table FilmeCategoria [headercolor: #175e7a] {
+	IdFilme integer [ pk, increment, not null, unique ]
+	IdCategoria tinyint [ pk, not null ]
+}
+
+Table Categoria [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(100) [ not null ]
+}
+
+Table Cliente [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Nome varchar(255) [ not null ]
+	Cpf char(11) [ not null, unique ]
+	DataNascimento date [ not null ]
+	Telefone varchar(20) [ not null ]
+	IdEndereco integer [ not null ]
+}
+
+Table Cargo [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(255) [ not null ]
+}
+
+Table Promocao [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	NomePromocao varchar(255) [ not null ]
+	Valor decimal(15,2)
+	PercentualDesconto decimal(5,2)
+	DataValidade date [ not null ]
+	IdTipoPromocao tinyint [ not null ]
+}
+
+Table TipoPromocao [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(100) [ not null ]
+}
+
+Table Avaliacao [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Nota integer [ not null ]
+	Comentario varchar(255)
+	Data date [ not null ]
+	IdCliente integer [ not null ]
+	IdFilme integer [ not null ]
+}
+
+Table AluguelFilme [headercolor: #175e7a] {
+	IdAluguel integer [ pk, increment, not null, unique ]
+	IdFilme integer [ pk, not null ]
+}
+
+Table Pagamento [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	ValorTotal decimal(15,2) [ not null ]
+	DataPagamento datetime [ not null ]
+	IdFormaPagamento tinyint [ not null ]
+	Pago bit [ not null ]
+}
+
+Table FormaPagamento [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(255) [ not null ]
+}
+
+Ref fk_FilmeCategoria_IdFilme_Filme {
+	FilmeCategoria.IdFilme > Filme.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Categoria_Id_FilmeCategoria {
+	Categoria.Id < FilmeCategoria.IdCategoria [ delete: no action, update: no action ]
+}
+
+Ref fk_Aluguel_IdFuncionario_Funcionario {
+	Aluguel.IdFuncionario > Funcionario.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Funcionario_IdCargo_Cargo {
+	Funcionario.IdCargo > Cargo.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Promocao_Id_Aluguel {
+	Promocao.Id < Aluguel.IdPromocao [ delete: no action, update: no action ]
+}
+
+Ref fk_Promocao_IdTipo_Tipo {
+	Promocao.IdTipoPromocao > TipoPromocao.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Cliente_Id_Aluguel {
+	Cliente.Id < Aluguel.IdCliente [ delete: no action, update: no action ]
+}
+
+Ref fk_Filme_Id_AluguelFilme {
+	Filme.Id < AluguelFilme.IdFilme [ delete: no action, update: no action ]
+}
+
+Ref fk_Aluguel_Id_AluguelFilme {
+	Aluguel.Id < AluguelFilme.IdAluguel [ delete: no action, update: no action ]
+}
+
+Ref fk_Aluguel_IdPagamento_Pagamento {
+	Aluguel.IdPagamento - Pagamento.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Cliente_Id_Avaliacao {
+	Cliente.Id < Avaliacao.IdCliente [ delete: no action, update: no action ]
+}
+
+Ref fk_Pagamento_IdFormaPagamento_FormaPagamento {
+	Pagamento.IdFormaPagamento > FormaPagamento.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Endereco_Id_Cliente {
+	Endereco.Id - Cliente.IdEndereco [ delete: no action, update: no action ]
+}
+
+Ref fk_Avaliacao_IdFilme_Filme {
+	Avaliacao.IdFilme > Filme.Id [ delete: no action, update: no action ]
+}
