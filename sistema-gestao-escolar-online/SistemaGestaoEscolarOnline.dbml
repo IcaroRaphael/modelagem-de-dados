@@ -1,0 +1,184 @@
+Table Aluno [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	NomeCompleto varchar(100) [ not null ]
+	NumeroMatricula varchar(10) [ not null, unique ]
+	DataNascimento date [ not null ]
+	Cpf char(11) [ not null, unique ]
+	IdResponsavelFinanceiro integer [ not null ]
+}
+
+Table ResponsavelFinanceiro [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	NomeCompleto varchar(100) [ not null ]
+	Cpf char(11) [ not null ]
+}
+
+Table Professor [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Salario smallmoney [ not null ]
+	Nome varchar(100) [ not null ]
+	Cpf char(11) [ not null ]
+}
+
+Table Especialidade [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(50) [ not null ]
+}
+
+Table Disciplina [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(100) [ not null ]
+	HorasCargaHoraria smallint [ not null ]
+	PreRequisitos varchar(255)
+}
+
+Table Turma [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	CapacidadeMaxima tinyint [ not null ]
+	IdSerie tinyint [ not null ]
+	IdTurno tinyint [ not null ]
+}
+
+Table Turno [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(10) [ not null ]
+}
+
+Table Matricula [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	IdTurma integer [ not null ]
+	IdAluno integer [ not null ]
+	IdDisciplina tinyint [ not null ]
+	IdNota integer [ not null ]
+	Semestre decimal(5,1) [ not null ]
+	Frequencia decimal(4,1) [ not null ]
+	Aprovado bit [ not null ]
+}
+
+Table Nota [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	IdDisciplina tinyint [ not null ]
+	Nota decimal(4,2) [ not null ]
+	IdTipoAvaliacao tinyint [ not null ]
+}
+
+Table DisciplinaProfessor [headercolor: #175e7a] {
+	Id integer [ pk, not null ]
+	IdDisciplina tinyint [ increment, not null, unique ]
+	IdProfessor integer [ not null ]
+}
+
+Table Mensalidade [headercolor: #175e7a] {
+	Id integer [ pk, increment, not null, unique ]
+	Pago bit [ not null ]
+	IdSerie tinyint [ not null ]
+	IdAluno integer [ not null ]
+}
+
+Table Serie [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(20) [ not null ]
+	Valor smallmoney [ not null ]
+}
+
+Table DisciplinaProfessorTurma [headercolor: #175e7a] {
+	IdTurma integer [ pk, not null ]
+	IdDisciplinaProfessor integer [ pk, increment, not null, unique ]
+}
+
+Table TipoAvaliacao [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	Nome varchar(20) [ not null ]
+}
+
+Table HorarioDisponivel [headercolor: #175e7a] {
+	Id tinyint [ pk, increment, not null, unique ]
+	HoraInicial time [ not null ]
+	HoraFinal time [ not null ]
+}
+
+Table ProfessorHorarioDisponivel [headercolor: #175e7a] {
+	IdProfessor integer [ pk, not null ]
+	IdHorarioDisponivel tinyint [ pk, increment, not null, unique ]
+}
+
+Table ProfessorEspecialidade [headercolor: #175e7a] {
+	IdProfessor integer [ pk, increment, not null, unique ]
+	IdEspecialidade tinyint [ pk, not null ]
+}
+
+Ref fk_Periodo_Id_Turma {
+	Turno.Id < Turma.IdTurno [ delete: no action, update: no action ]
+}
+
+Ref fk_Disciplina_Id_Matricula {
+	Disciplina.Id < Matricula.IdDisciplina [ delete: no action, update: no action ]
+}
+
+Ref fk_Aluno_Id_Matricula {
+	Aluno.Id < Matricula.IdAluno [ delete: no action, update: no action ]
+}
+
+Ref fk_Disciplina_Id_DisciplinaTurma {
+	Disciplina.Id < DisciplinaProfessor.IdDisciplina [ delete: no action, update: no action ]
+}
+
+Ref fk_Professor_Id_DisciplinaTurma {
+	Professor.Id < DisciplinaProfessor.IdProfessor [ delete: no action, update: no action ]
+}
+
+Ref fk_MatriculaDisciplina_IdNota_Nota {
+	Matricula.IdNota - Nota.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Aluno_Id_Mensalidade {
+	Aluno.Id < Mensalidade.IdAluno [ delete: no action, update: no action ]
+}
+
+Ref fk_Serie_Id_Mensalidade {
+	Serie.Id < Mensalidade.IdSerie [ delete: no action, update: no action ]
+}
+
+Ref fk_Serie_Id_Turma {
+	Serie.Id < Turma.IdSerie [ delete: no action, update: no action ]
+}
+
+Ref fk_Disciplina_Id_Nota {
+	Disciplina.Id < Nota.IdDisciplina [ delete: no action, update: no action ]
+}
+
+Ref fk_Turma_Id_MatriculaDisciplina {
+	Turma.Id < Matricula.IdTurma [ delete: no action, update: no action ]
+}
+
+Ref fk_DisciplinaProfessor_Id_DisciplinaProfessorTurma {
+	DisciplinaProfessor.Id < DisciplinaProfessorTurma.IdDisciplinaProfessor [ delete: no action, update: no action ]
+}
+
+Ref fk_DisciplinaProfessorTurma_IdTurma_Turma {
+	DisciplinaProfessorTurma.IdTurma > Turma.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_ResponsavelFinanceiro_Id_Aluno {
+	ResponsavelFinanceiro.Id < Aluno.IdResponsavelFinanceiro [ delete: no action, update: no action ]
+}
+
+Ref fk_TipoAvaliacao_Id_Nota {
+	TipoAvaliacao.Id < Nota.IdTipoAvaliacao [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfessorHorarioDisponivel_IdHorarioDisponivel_HorarioDisponivel {
+	ProfessorHorarioDisponivel.IdHorarioDisponivel > HorarioDisponivel.Id [ delete: no action, update: no action ]
+}
+
+Ref fk_Professor_Id_ProfessorHorarioDisponivel {
+	Professor.Id < ProfessorHorarioDisponivel.IdProfessor [ delete: no action, update: no action ]
+}
+
+Ref fk_Especialidade_Id_ProfessorEspecialidade {
+	Especialidade.Id < ProfessorEspecialidade.IdEspecialidade [ delete: no action, update: no action ]
+}
+
+Ref fk_Professor_Id_ProfessorEspecialidade {
+	Professor.Id < ProfessorEspecialidade.IdProfessor [ delete: no action, update: no action ]
+}
